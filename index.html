@@ -2,25 +2,27 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>For My Whole World ❤️</title>
   <style>
-    /* Cohesive Color Palette */
     :root {
-      --bg-dark: #0a0a0c;
-      --card-bg: rgba(18, 18, 22, 0.75);
+      --bg-dark: #070709;
+      --card-bg: rgba(15, 15, 20, 0.75);
       --baby-pink: #f4c2c2;
       --rose-gold: #e07a5f;
-      --accent-glow: rgba(244, 194, 194, 0.15);
-      --text-main: #f0e6e6;
-      --text-muted: #a39999;
-      --border-color: rgba(244, 194, 194, 0.2);
+      --hot-rose: #ff4d6d;
+      --accent-glow: rgba(244, 194, 194, 0.18);
+      --text-main: #f5eded;
+      --text-muted: #a89f9f;
+      --border-color: rgba(244, 194, 194, 0.22);
     }
 
     * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
+      user-select: none;
+      -webkit-user-select: none;
     }
 
     ::selection {
@@ -34,90 +36,174 @@
       justify-content: center;
       align-items: center;
       background-color: var(--bg-dark);
-      background-image: 
-        radial-gradient(circle at 50% 20%, rgba(224, 122, 95, 0.08) 0%, transparent 60%),
-        radial-gradient(circle at 50% 80%, rgba(244, 194, 194, 0.05) 0%, transparent 60%);
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
       overflow-x: hidden;
-      perspective: 1000px;
+      perspective: 1200px;
       color: var(--text-main);
-      padding: 40px 20px;
+      padding: 25px 15px;
     }
 
-    /* Falling Ambient Particles */
-    .particle {
-      position: absolute;
-      background: var(--baby-pink);
-      box-shadow: 0 0 8px var(--baby-pink);
-      border-radius: 50%;
-      animation: fall linear infinite;
-      pointer-events: none;
+    /* Interactive Background Canvas */
+    #canvas-bg {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
       z-index: 1;
+      pointer-events: none;
     }
 
-    @keyframes fall {
-      0% { transform: translateY(-100px) scale(0); opacity: 0; }
-      20% { opacity: 0.6; }
-      100% { transform: translateY(100vh) scale(1); opacity: 0; }
+    /* Radial Ambient Spotlights */
+    .ambient-glow {
+      position: fixed;
+      width: 600px;
+      height: 600px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(224, 122, 95, 0.12) 0%, rgba(244, 194, 194, 0.03) 40%, transparent 70%);
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+      z-index: 2;
+      animation: pulseGlow 8s ease-in-out infinite alternate;
     }
 
-    /* Card Wrapper & 3D Tilt */
+    @keyframes pulseGlow {
+      0% { transform: translate(-50%, -50%) scale(0.8); opacity: 0.6; }
+      100% { transform: translate(-50%, -50%) scale(1.2); opacity: 1; }
+    }
+
+    /* Music Floating Toggle */
+    .audio-control {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      z-index: 100;
+      background: rgba(20, 20, 25, 0.6);
+      backdrop-filter: blur(15px);
+      -webkit-backdrop-filter: blur(15px);
+      border: 1px solid var(--border-color);
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+      color: var(--baby-pink);
+      font-size: 18px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+      transition: all 0.3s ease;
+    }
+
+    .audio-control:hover {
+      transform: scale(1.1);
+      border-color: var(--baby-pink);
+      box-shadow: 0 0 20px var(--accent-glow);
+    }
+
+    /* Main Card Wrapper */
     .card-wrapper {
       width: 100%;
       max-width: 650px;
       z-index: 10;
       transform-style: preserve-3d;
-      transition: transform 0.1s ease-out;
+      will-change: transform;
+      transition: transform 0.15s cubic-bezier(0.2, 0.8, 0.2, 1);
     }
 
     .card {
       background: var(--card-bg);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
+      backdrop-filter: blur(25px);
+      -webkit-backdrop-filter: blur(25px);
       border: 1px solid var(--border-color);
-      border-radius: 24px;
-      padding: 45px 35px;
-      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6), 0 0 30px var(--accent-glow);
+      border-radius: 28px;
+      padding: 42px 32px;
+      box-shadow: 0 30px 60px rgba(0, 0, 0, 0.7), 
+                  0 0 40px rgba(244, 194, 194, 0.1),
+                  inset 0 1px 1px rgba(255, 255, 255, 0.1);
       text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .card::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: linear-gradient(
+        45deg,
+        transparent 45%,
+        rgba(255, 255, 255, 0.03) 50%,
+        transparent 55%
+      );
+      transform: rotate(30deg);
+      pointer-events: none;
+      animation: shimmer 9s infinite;
+    }
+
+    @keyframes shimmer {
+      0% { transform: translate(-30%, -30%) rotate(30deg); }
+      100% { transform: translate(30%, 30%) rotate(30deg); }
     }
 
     .header-tag {
-      display: inline-block;
-      font-size: 12px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
       text-transform: uppercase;
-      letter-spacing: 3px;
+      letter-spacing: 3.5px;
       color: var(--rose-gold);
-      margin-bottom: 8px;
-      font-weight: 600;
+      margin-bottom: 10px;
+      font-weight: 700;
     }
 
     h1 {
       color: var(--baby-pink);
-      font-size: 30px;
+      font-size: 32px;
       margin-bottom: 25px;
       font-weight: 700;
       letter-spacing: 1px;
-      text-shadow: 0 0 20px rgba(244, 194, 194, 0.3);
+      text-shadow: 0 0 25px rgba(244, 194, 194, 0.35);
     }
 
-    /* Letter Body Area */
+    .heart-icon {
+      display: inline-block;
+      animation: heartbeat 1.8s ease-in-out infinite;
+    }
+
+    @keyframes heartbeat {
+      0%, 100% { transform: scale(1); }
+      15% { transform: scale(1.25); }
+      30% { transform: scale(1); }
+      45% { transform: scale(1.15); }
+    }
+
+    /* Letter Body */
     .letter-body {
-      background: rgba(10, 10, 12, 0.6);
-      padding: 25px;
-      border-radius: 16px;
-      border-left: 3px solid var(--baby-pink);
-      border-top: 1px solid rgba(244, 194, 194, 0.05);
+      background: rgba(8, 8, 11, 0.65);
+      padding: 26px;
+      border-radius: 18px;
+      border-left: 4px solid var(--baby-pink);
+      border-top: 1px solid rgba(255, 255, 255, 0.05);
       font-size: 16px;
-      line-height: 1.8;
+      line-height: 1.85;
       text-align: left;
       margin-bottom: 35px;
-      min-height: 170px;
-      box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.5);
+      min-height: 180px;
+      box-shadow: inset 0 3px 15px rgba(0, 0, 0, 0.6);
+      position: relative;
     }
 
     #typewriter-text {
       color: var(--text-main);
       white-space: pre-wrap;
+      word-break: break-word;
     }
 
     .cursor {
@@ -125,9 +211,10 @@
       width: 2px;
       height: 18px;
       background-color: var(--baby-pink);
+      box-shadow: 0 0 8px var(--baby-pink);
       animation: blink 0.7s infinite;
       vertical-align: middle;
-      margin-left: 3px;
+      margin-left: 4px;
     }
 
     @keyframes blink {
@@ -138,23 +225,23 @@
     /* Photo Gallery Section */
     .gallery-title {
       color: var(--text-muted);
-      font-size: 14px;
+      font-size: 12px;
       text-transform: uppercase;
-      letter-spacing: 2px;
-      margin-bottom: 20px;
+      letter-spacing: 3px;
+      margin-bottom: 18px;
       opacity: 0;
       animation: fadeIn 1s forwards;
-      animation-delay: 4.5s;
+      animation-delay: 4.2s;
     }
 
     .photo-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
-      gap: 15px;
+      grid-template-columns: repeat(auto-fit, minmax(135px, 1fr));
+      gap: 16px;
       margin-bottom: 35px;
       opacity: 0;
       animation: fadeIn 1s forwards;
-      animation-delay: 4.5s;
+      animation-delay: 4.2s;
     }
 
     @keyframes fadeIn {
@@ -162,71 +249,169 @@
     }
 
     .photo-card {
-      background: rgba(20, 20, 25, 0.8);
-      border-radius: 14px;
-      padding: 8px;
+      background: rgba(22, 22, 28, 0.85);
+      border-radius: 16px;
+      padding: 7px;
       border: 1px solid var(--border-color);
-      transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+      transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+      cursor: pointer;
       position: relative;
       overflow: hidden;
     }
 
     .photo-card:hover {
-      transform: translateY(-8px);
+      transform: translateY(-8px) scale(1.03);
       border-color: var(--baby-pink);
-      box-shadow: 0 10px 25px rgba(244, 194, 194, 0.2);
+      box-shadow: 0 12px 30px rgba(244, 194, 194, 0.25);
     }
 
     .photo-card img {
       width: 100%;
-      height: 150px;
+      height: 145px;
       object-fit: cover;
-      border-radius: 10px;
-      filter: brightness(0.9) contrast(1.05);
-      transition: filter 0.4s ease;
+      border-radius: 11px;
+      filter: brightness(0.92) contrast(1.05);
+      transition: all 0.4s ease;
     }
 
     .photo-card:hover img {
-      filter: brightness(1) contrast(1.1);
+      filter: brightness(1.08) contrast(1.1);
     }
 
-    /* Color-Coordinated Button */
+    .photo-hint {
+      position: absolute;
+      bottom: 12px;
+      right: 12px;
+      background: rgba(0,0,0,0.6);
+      backdrop-filter: blur(5px);
+      color: var(--baby-pink);
+      font-size: 10px;
+      padding: 3px 7px;
+      border-radius: 6px;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .photo-card:hover .photo-hint {
+      opacity: 1;
+    }
+
+    /* Action Button */
     .btn {
-      background: linear-gradient(135deg, var(--baby-pink) 0%, var(--rose-gold) 100%);
-      color: var(--bg-dark);
+      background: linear-gradient(135deg, var(--baby-pink) 0%, var(--rose-gold) 60%, var(--hot-rose) 100%);
+      background-size: 200% 200%;
+      color: #0d0608;
       border: none;
-      padding: 14px 40px;
-      font-size: 15px;
-      font-weight: 700;
-      border-radius: 30px;
+      padding: 16px 44px;
+      font-size: 14px;
+      font-weight: 800;
+      border-radius: 35px;
       cursor: pointer;
       text-transform: uppercase;
-      letter-spacing: 2px;
-      transition: all 0.3s ease;
-      box-shadow: 0 5px 20px rgba(224, 122, 95, 0.3);
+      letter-spacing: 2.5px;
+      transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      box-shadow: 0 6px 25px rgba(224, 122, 95, 0.35);
       opacity: 0;
-      animation: fadeIn 1s forwards;
-      animation-delay: 5.5s;
+      animation: fadeIn 1s forwards, btnGlow 3s ease-in-out infinite alternate;
+      animation-delay: 5s, 5.5s;
       outline: none;
+      position: relative;
+      z-index: 20;
+    }
+
+    @keyframes btnGlow {
+      0% { background-position: 0% 50%; box-shadow: 0 6px 25px rgba(224, 122, 95, 0.35); }
+      100% { background-position: 100% 50%; box-shadow: 0 10px 35px rgba(255, 77, 109, 0.55); }
     }
 
     .btn:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 8px 30px rgba(244, 194, 194, 0.5);
-      filter: brightness(1.05);
+      transform: translateY(-3px) scale(1.04);
+      filter: brightness(1.1);
     }
 
     .btn:active {
-      transform: translateY(1px);
+      transform: translateY(1px) scale(0.98);
+    }
+
+    /* Lightbox Modal */
+    .modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(5, 5, 8, 0.92);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      z-index: 1000;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.4s ease;
+    }
+
+    .modal.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .modal-content {
+      position: relative;
+      max-width: 90%;
+      max-height: 85vh;
+      border-radius: 20px;
+      border: 1px solid var(--border-color);
+      box-shadow: 0 25px 50px rgba(0,0,0,0.8), 0 0 40px var(--accent-glow);
+      transform: scale(0.85);
+      transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    .modal.active .modal-content {
+      transform: scale(1);
+    }
+
+    .modal-img {
+      max-width: 100%;
+      max-height: 80vh;
+      border-radius: 18px;
+      display: block;
+      object-fit: contain;
+    }
+
+    .modal-close {
+      position: absolute;
+      top: -18px;
+      right: -18px;
+      background: var(--baby-pink);
+      color: var(--bg-dark);
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-weight: bold;
+      cursor: pointer;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.5);
     }
   </style>
 </head>
 <body>
 
+  <canvas id="canvas-bg"></canvas>
+  <div class="ambient-glow"></div>
+
+  <!-- Optional Ambient Sound Toggle (Plays synthesized chords if no audio src added) -->
+  <div class="audio-control" id="audioBtn" title="Sound Effect">
+    <span id="audioIcon">🎵</span>
+  </div>
+
   <div class="card-wrapper" id="cardWrapper">
     <div class="card">
-      <span class="header-tag">Private Letter</span>
-      <h1>To My Safe Space 🤍</h1>
+      <span class="header-tag">Private Letter <span class="heart-icon">✨</span></span>
+      <h1>To My Safe Space <span class="heart-icon">🤍</span></h1>
 
       <div class="letter-body">
         <span id="typewriter-text"></span><span class="cursor"></span>
@@ -234,95 +419,248 @@
 
       <div class="gallery-title">My Favorite Memories 🌸</div>
       <div class="photo-grid">
-        <div class="photo-card">
+        <div class="photo-card" onclick="openModal('pic1.png')">
           <img src="pic1.png" alt="Memory 1">
+          <span class="photo-hint">🔍 Tap</span>
         </div>
-        <div class="photo-card">
+        <div class="photo-card" onclick="openModal('pic2.png')">
           <img src="pic2.png" alt="Memory 2">
+          <span class="photo-hint">🔍 Tap</span>
         </div>
-        <div class="photo-card">
+        <div class="photo-card" onclick="openModal('pic3.png')">
           <img src="pic3.png" alt="Memory 3">
+          <span class="photo-hint">🔍 Tap</span>
         </div>
       </div>
 
-      <button class="btn" onclick="triggerHeartExplosion()">I Love You</button>
+      <button class="btn" onclick="triggerMegaRoseExplosion()">I Love You</button>
+    </div>
+  </div>
+
+  <!-- Modal Lightbox -->
+  <div class="modal" id="imageModal" onclick="closeModal()">
+    <div class="modal-content" onclick="event.stopPropagation()">
+      <div class="modal-close" onclick="closeModal()">✕</div>
+      <img src="" alt="Expanded Memory" class="modal-img" id="modalImg">
     </div>
   </div>
 
   <script>
-    // Message Content
+    // --- 1. TYPEWRITER EFFECT ---
     const message = "ya ru7i,\n\nYour letter completely made my day. Reading your words when I was down made me smile so hard and reminded me how lucky I am to have you in my life.\n\nYou said 'I love you' doesn't feel like enough sometimes, and I feel the exact same way. You're my comfort zone, my safe space, and my favorite part of every day.\n\nThank you for always caring about me. I definitely love you more though. ❤️";
     
-    let i = 0;
-    const speed = 35;
-    
+    let index = 0;
     function typeWriter() {
-      if (i < message.length) {
-        document.getElementById("typewriter-text").innerHTML += message.charAt(i);
-        i++;
-        setTimeout(typeWriter, speed);
+      if (index < message.length) {
+        document.getElementById("typewriter-text").textContent += message.charAt(index);
+        index++;
+        setTimeout(typeWriter, 32);
       } else {
         document.querySelector('.cursor').style.display = 'none';
       }
     }
-
     window.onload = typeWriter;
 
-    // 3D Hover Tilt
+    // --- 2. CANVAS INTERACTIVE PARTICLES & CURSOR TRAIL ---
+    const canvas = document.getElementById('canvas-bg');
+    const ctx = canvas.getContext('2d');
+    
+    function resizeCanvas() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+    resizeCanvas();
+    window.addEventListener('resize', resizeCanvas);
+
+    const particles = [];
+    const trail = [];
+
+    class Particle {
+      constructor() {
+        this.reset();
+      }
+      reset() {
+        this.x = Math.random() * canvas.width;
+        this.y = Math.random() * canvas.height;
+        this.size = Math.random() * 2.5 + 0.5;
+        this.speedY = -(Math.random() * 0.4 + 0.1);
+        this.speedX = (Math.random() - 0.5) * 0.3;
+        this.opacity = Math.random() * 0.6 + 0.2;
+      }
+      update() {
+        this.y += this.speedY;
+        this.x += this.speedX;
+        if (this.y < 0) this.y = canvas.height;
+        if (this.x < 0 || this.x > canvas.width) this.speedX *= -1;
+      }
+      draw() {
+        ctx.fillStyle = `rgba(244, 194, 194, ${this.opacity})`;
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+        ctx.fill();
+      }
+    }
+
+    for (let i = 0; i < 60; i++) {
+      particles.push(new Particle());
+    }
+
+    // Touch / Mouse Cursor Glow Trail
+    function addTrail(x, y) {
+      trail.push({ x, y, size: 8, opacity: 0.8 });
+      if (trail.length > 25) trail.shift();
+    }
+
+    window.addEventListener('mousemove', (e) => addTrail(e.clientX, e.clientY));
+    window.addEventListener('touchmove', (e) => {
+      if (e.touches.length > 0) addTrail(e.touches[0].clientX, e.touches[0].clientY);
+    });
+
+    function animateCanvas() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      
+      // Update ambient background particles
+      particles.forEach(p => {
+        p.update();
+        p.draw();
+      });
+
+      // Draw cursor glowing trail
+      for (let i = 0; i < trail.length; i++) {
+        let t = trail[i];
+        t.size *= 0.94;
+        t.opacity *= 0.92;
+        ctx.fillStyle = `rgba(224, 122, 95, ${t.opacity})`;
+        ctx.shadowColor = '#f4c2c2';
+        ctx.shadowBlur = 10;
+        ctx.beginPath();
+        ctx.arc(t.x, t.y, Math.max(t.size, 1), 0, Math.PI * 2);
+        ctx.fill();
+        ctx.shadowBlur = 0;
+      }
+
+      requestAnimationFrame(animateCanvas);
+    }
+    animateCanvas();
+
+    // --- 3. 3D TILT EFFECT (MOUSE & MOBILE GYROSCOPE) ---
     const wrapper = document.getElementById('cardWrapper');
-    document.addEventListener('mousemove', (e) => {
-      let xAxis = (window.innerWidth / 2 - e.pageX) / 45;
-      let yAxis = (window.innerHeight / 2 - e.pageY) / 45;
+    let ticking = false;
+
+    function applyTilt(xAxis, yAxis) {
       wrapper.style.transform = `rotateY(${xAxis}deg) rotateX(${yAxis}deg)`;
+    }
+
+    document.addEventListener('mousemove', (e) => {
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          let xAxis = (window.innerWidth / 2 - e.clientX) / 40;
+          let yAxis = (window.innerHeight / 2 - e.clientY) / 40;
+          applyTilt(xAxis, yAxis);
+          ticking = false;
+        });
+        ticking = true;
+      }
     });
 
     document.addEventListener('mouseleave', () => {
-      wrapper.style.transform = `rotateY(0deg) rotateX(0deg)`;
+      applyTilt(0, 0);
     });
 
-    // Background Particle Stream
-    function createParticles() {
-      for(let i = 0; i < 25; i++) {
-        let particle = document.createElement('div');
-        particle.className = 'particle';
-        particle.style.left = Math.random() * 100 + 'vw';
-        particle.style.width = Math.random() * 4 + 2 + 'px';
-        particle.style.height = particle.style.width;
-        particle.style.animationDuration = Math.random() * 4 + 3 + 's';
-        particle.style.animationDelay = Math.random() * 5 + 's';
-        document.body.appendChild(particle);
-      }
+    // Mobile Gyroscope support if device supports orientation
+    if (window.DeviceOrientationEvent) {
+      window.addEventListener('deviceorientation', (e) => {
+        if (e.gamma !== null && e.beta !== null) {
+          let xAxis = Math.min(Math.max(e.gamma / 2.5, -15), 15);
+          let yAxis = Math.min(Math.max((e.beta - 45) / 2.5, -15), 15);
+          applyTilt(xAxis, yAxis);
+        }
+      });
     }
-    createParticles();
 
-    // Heart Burst Effect
-    function triggerHeartExplosion() {
-      for (let i = 0; i < 35; i++) {
-        let heart = document.createElement('div');
-        heart.innerHTML = '🌸';
-        heart.style.position = 'absolute';
-        heart.style.left = '50%';
-        heart.style.top = '80%';
-        heart.style.fontSize = Math.random() * 18 + 12 + 'px';
-        heart.style.pointerEvents = 'none';
-        
+    // --- 4. LIGHTBOX MODAL ---
+    function openModal(src) {
+      const modal = document.getElementById('imageModal');
+      const img = document.getElementById('modalImg');
+      img.src = src;
+      modal.classList.add('active');
+    }
+
+    function closeModal() {
+      document.getElementById('imageModal').classList.remove('active');
+    }
+
+    // --- 5. ULTRA 10,000X MEGA ROSE EXPLOSION ---
+    function triggerMegaRoseExplosion() {
+      playSynthChord();
+      const roseCount = 140;
+      const emojis = ['🌹', '🌹', '🌸', '💖', '✨', '🥀'];
+
+      for (let i = 0; i < roseCount; i++) {
+        let element = document.createElement('div');
+        element.innerText = emojis[Math.floor(Math.random() * emojis.length)];
+        element.style.position = 'fixed';
+        element.style.left = '50%';
+        element.style.top = '50%';
+        element.style.fontSize = (Math.random() * 26 + 18) + 'px';
+        element.style.pointerEvents = 'none';
+        element.style.zIndex = '999';
+        element.style.filter = `drop-shadow(0 0 10px rgba(255, 77, 109, 0.6))`;
+        element.style.willChange = 'transform, opacity';
+
         let angle = Math.random() * Math.PI * 2;
-        let velocity = 60 + Math.random() * 120;
-        let dx = Math.cos(angle) * velocity;
-        let dy = Math.sin(angle) * velocity - 60;
-        
-        heart.animate([
-          { transform: `translate(0, 0) scale(1)`, opacity: 1 },
-          { transform: `translate(${dx}px, ${dy}px) scale(1.4)`, opacity: 0 }
+        let distance = Math.random() * Math.max(window.innerWidth, window.innerHeight) * 0.75;
+        let dx = Math.cos(angle) * distance;
+        let dy = Math.sin(angle) * distance;
+        let rotation = (Math.random() - 0.5) * 1080;
+
+        element.animate([
+          { 
+            transform: `translate3d(-50%, -50%, 0) scale(0.1) rotate(0deg)`, 
+            opacity: 1 
+          },
+          { 
+            transform: `translate3d(calc(-50% + ${dx}px), calc(-50% + ${dy}px), 0) scale(1.6) rotate(${rotation}deg)`, 
+            opacity: 0 
+          }
         ], {
-          duration: 1200 + Math.random() * 400,
-          easing: 'cubic-bezier(0.25, 1, 0.5, 1)'
+          duration: 2200 + Math.random() * 1200,
+          easing: 'cubic-bezier(0.1, 0.8, 0.25, 1)'
         });
-        
-        document.body.appendChild(heart);
-        setTimeout(() => heart.remove(), 1600);
+
+        document.body.appendChild(element);
+        setTimeout(() => element.remove(), 3500);
       }
     }
+
+    // --- 6. SYNTHETIC SOUND CHORD (Web Audio API - No File Needed) ---
+    function playSynthChord() {
+      try {
+        const AudioCtx = window.AudioContext || window.webkitAudioContext;
+        if (!AudioCtx) return;
+        const ctx = new AudioCtx();
+        const freqs = [261.63, 329.63, 392.00, 523.25]; // C Major warmth
+        
+        freqs.forEach((freq, index) => {
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(freq, ctx.currentTime);
+          gain.gain.setValueAtTime(0.08, ctx.currentTime);
+          gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 1.8 + index * 0.2);
+          
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          
+          osc.start(ctx.currentTime + index * 0.05);
+          osc.stop(ctx.currentTime + 2.5);
+        });
+      } catch(e) {
+        // Fallback silently if audio context restricted
+      }
+    }
+
+    document.getElementById('audioBtn').addEventListener('click', playSynthChord);
   </script>
 </body>
 </html>
