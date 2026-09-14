@@ -11,12 +11,12 @@
       --baby-pink: #f4c2c2;
       --rose-gold: #e07a5f;
       --hot-rose: #ff4d6d;
-      --accent-glow: rgba(244, 194, 194, 0.18);
       --text-main: #f5eded;
       --text-muted: #a89f9f;
       --border-color: rgba(244, 194, 194, 0.22);
     }
 
+    /* Complete Scrollbar Suppression */
     * {
       box-sizing: border-box;
       margin: 0;
@@ -25,36 +25,37 @@
       -webkit-user-select: none;
       -webkit-tap-highlight-color: transparent;
       touch-action: manipulation;
+      scrollbar-width: none !important;
+      -ms-overflow-style: none !important;
+    }
+
+    *::-webkit-scrollbar {
+      display: none !important;
+      width: 0 !important;
+      height: 0 !important;
     }
 
     html, body {
-      width: 100%;
-      min-height: 100vh;
-      min-height: 100dvh;
+      width: 100vw;
+      height: 100vh;
+      height: 100dvh;
+      overflow: hidden !important;
+      position: fixed;
+      top: 0;
+      left: 0;
       background-color: var(--bg-dark);
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
       color: var(--text-main);
-      overflow-x: hidden;
-    }
-
-    /* Hide standard scrollbars visually while retaining smooth scrolling */
-    html::-webkit-scrollbar, body::-webkit-scrollbar {
-      display: none;
-    }
-    html, body {
-      -ms-overflow-style: none;
-      scrollbar-width: none;
     }
 
     body {
       display: flex;
       justify-content: center;
       align-items: center;
-      padding: 24px 16px;
-      perspective: 1000px;
+      padding: 12px;
     }
 
-    /* Animated Canvas Background */
+    /* Background Animation Canvas */
     #canvas-bg {
       position: fixed;
       top: 0;
@@ -67,10 +68,10 @@
 
     .ambient-glow {
       position: fixed;
-      width: 90vw;
-      max-width: 500px;
-      height: 90vw;
-      max-height: 500px;
+      width: 80vw;
+      max-width: 450px;
+      height: 80vw;
+      max-height: 450px;
       border-radius: 50%;
       background: radial-gradient(circle, rgba(224, 122, 95, 0.14) 0%, rgba(244, 194, 194, 0.04) 50%, transparent 70%);
       top: 50%;
@@ -89,8 +90,8 @@
       backdrop-filter: blur(15px);
       -webkit-backdrop-filter: blur(15px);
       border: 1px solid var(--border-color);
-      width: 46px;
-      height: 46px;
+      width: 44px;
+      height: 44px;
       border-radius: 50%;
       display: flex;
       justify-content: center;
@@ -99,22 +100,17 @@
       color: var(--baby-pink);
       font-size: 18px;
       box-shadow: 0 4px 15px rgba(0,0,0,0.4);
-      transition: transform 0.2s ease;
     }
 
-    .audio-control:active {
-      transform: scale(0.92);
-    }
-
-    /* Main Card Layout */
+    /* Main Card Layout Fits Viewport */
     .card-wrapper {
       width: 100%;
-      max-width: 520px;
+      max-width: 480px;
+      max-height: 96dvh;
       z-index: 10;
-      transform-style: preserve-3d;
-      will-change: transform;
-      transition: transform 0.1s ease-out;
-      margin: auto;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
     }
 
     .card {
@@ -122,10 +118,9 @@
       backdrop-filter: blur(20px);
       -webkit-backdrop-filter: blur(20px);
       border: 1px solid var(--border-color);
-      border-radius: 28px;
-      padding: 30px 22px;
-      box-shadow: 0 20px 45px rgba(0, 0, 0, 0.8), 
-                  0 0 35px rgba(244, 194, 194, 0.12);
+      border-radius: 24px;
+      padding: 20px 16px;
+      box-shadow: 0 20px 45px rgba(0, 0, 0, 0.8), 0 0 35px rgba(244, 194, 194, 0.12);
       text-align: center;
       position: relative;
     }
@@ -134,18 +129,18 @@
       display: inline-flex;
       align-items: center;
       gap: 5px;
-      font-size: 11px;
+      font-size: 10px;
       text-transform: uppercase;
       letter-spacing: 2.5px;
       color: var(--rose-gold);
-      margin-bottom: 8px;
+      margin-bottom: 6px;
       font-weight: 700;
     }
 
     h1 {
       color: var(--baby-pink);
-      font-size: clamp(22px, 6vw, 28px);
-      margin-bottom: 20px;
+      font-size: clamp(20px, 5vw, 24px);
+      margin-bottom: 14px;
       font-weight: 700;
       letter-spacing: 0.5px;
       text-shadow: 0 0 20px rgba(244, 194, 194, 0.3);
@@ -163,17 +158,16 @@
       45% { transform: scale(1.1); }
     }
 
-    /* Full Letter Text Box (No inner scrollbars) */
     .letter-body {
       background: rgba(8, 8, 11, 0.75);
-      padding: 20px 18px;
-      border-radius: 18px;
+      padding: 14px 12px;
+      border-radius: 16px;
       border-left: 3px solid var(--baby-pink);
       border-top: 1px solid rgba(255, 255, 255, 0.05);
-      font-size: clamp(14px, 4vw, 15.5px);
-      line-height: 1.75;
+      font-size: clamp(13px, 3.6vw, 14.5px);
+      line-height: 1.65;
       text-align: left;
-      margin-bottom: 24px;
+      margin-bottom: 16px;
       box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.5);
     }
 
@@ -186,11 +180,11 @@
     .cursor {
       display: inline-block;
       width: 2px;
-      height: 15px;
+      height: 14px;
       background-color: var(--baby-pink);
       animation: blink 0.7s infinite;
       vertical-align: middle;
-      margin-left: 3px;
+      margin-left: 2px;
     }
 
     @keyframes blink {
@@ -200,25 +194,24 @@
 
     .gallery-title {
       color: var(--text-muted);
-      font-size: 11px;
+      font-size: 10px;
       text-transform: uppercase;
       letter-spacing: 2px;
-      margin-bottom: 14px;
+      margin-bottom: 10px;
     }
 
     .photo-grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      gap: 10px;
-      margin-bottom: 24px;
+      gap: 8px;
+      margin-bottom: 18px;
     }
 
     .photo-card {
       background: rgba(22, 22, 28, 0.85);
-      border-radius: 14px;
-      padding: 5px;
+      border-radius: 12px;
+      padding: 4px;
       border: 1px solid var(--border-color);
-      transition: transform 0.2s ease, border-color 0.2s ease;
       cursor: pointer;
     }
 
@@ -229,9 +222,9 @@
 
     .photo-card img {
       width: 100%;
-      height: clamp(85px, 24vw, 125px);
+      height: clamp(70px, 18vh, 105px);
       object-fit: cover;
-      border-radius: 10px;
+      border-radius: 8px;
       display: block;
     }
 
@@ -240,17 +233,16 @@
       color: #0d0608;
       border: none;
       width: 100%;
-      max-width: 270px;
-      min-height: 50px;
-      padding: 14px 22px;
-      font-size: 14px;
+      max-width: 250px;
+      min-height: 46px;
+      padding: 10px 18px;
+      font-size: 13px;
       font-weight: 800;
       border-radius: 30px;
       cursor: pointer;
       text-transform: uppercase;
       letter-spacing: 2px;
-      transition: transform 0.15s ease, box-shadow 0.15s ease;
-      box-shadow: 0 6px 22px rgba(224, 122, 95, 0.35);
+      box-shadow: 0 6px 20px rgba(224, 122, 95, 0.35);
       outline: none;
       position: relative;
       z-index: 20;
@@ -260,7 +252,18 @@
       transform: scale(0.95);
     }
 
-    /* Modal */
+    /* Offscreen Invisible YouTube Player */
+    #youtube-player {
+      position: absolute;
+      top: -9999px;
+      left: -9999px;
+      width: 1px;
+      height: 1px;
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    /* Lightbox Modal */
     .modal {
       position: fixed;
       top: 0;
@@ -308,27 +311,24 @@
       right: -15px;
       background: var(--baby-pink);
       color: var(--bg-dark);
-      width: 34px;
-      height: 34px;
+      width: 32px;
+      height: 32px;
       border-radius: 50%;
       display: flex;
       justify-content: center;
       align-items: center;
       font-weight: bold;
       cursor: pointer;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.5);
     }
   </style>
 </head>
 <body>
 
-  <!-- Hidden Audio Player -->
-  <audio id="bgMusic" loop preload="auto">
-    <source src="song.mp3" type="audio/mpeg">
-  </audio>
-
   <canvas id="canvas-bg"></canvas>
   <div class="ambient-glow"></div>
+
+  <!-- Invisible YouTube Background Audio Container -->
+  <div id="youtube-player"></div>
 
   <div class="audio-control" id="audioBtn" title="Toggle Music">
     <span>🎵</span>
@@ -367,8 +367,11 @@
     </div>
   </div>
 
+  <!-- Load YouTube API -->
+  <script src="https://www.youtube.com/iframe_api"></script>
+
   <script>
-    // 1. Typewriter Animation
+    // 1. Typewriter Effect
     const message = "ya ru7i,\n\nYour letter completely made my day. Reading your words when I was down made me smile so hard and reminded me how lucky I am to have you in my life.\n\nYou said 'I love you' doesn't feel like enough sometimes, and I feel the exact same way. You're my comfort zone, my safe space, and my favorite part of every day.\n\nThank you for always caring about me. I definitely love you more though. ❤️";
     
     let index = 0;
@@ -383,7 +386,7 @@
     }
     window.onload = typeWriter;
 
-    // 2. Dynamic Particle Canvas
+    // 2. Canvas Animation
     const canvas = document.getElementById('canvas-bg');
     const ctx = canvas.getContext('2d');
     
@@ -418,7 +421,7 @@
       }
     }
 
-    for (let i = 0; i < 40; i++) particles.push(new Particle());
+    for (let i = 0; i < 35; i++) particles.push(new Particle());
 
     function addTrail(x, y) {
       trail.push({ x, y, size: 6, opacity: 0.8 });
@@ -447,19 +450,7 @@
     }
     animateCanvas();
 
-    // 3. Gyroscope Parallax Tilt
-    const wrapper = document.getElementById('cardWrapper');
-    if (window.DeviceOrientationEvent) {
-      window.addEventListener('deviceorientation', (e) => {
-        if (e.gamma !== null && e.beta !== null) {
-          let xAxis = Math.min(Math.max(e.gamma / 3, -10), 10);
-          let yAxis = Math.min(Math.max((e.beta - 45) / 3, -10), 10);
-          wrapper.style.transform = `rotateY(${xAxis}deg) rotateX(${yAxis}deg)`;
-        }
-      });
-    }
-
-    // 4. Modal
+    // 3. Modal Image Lightbox
     function openModal(src) {
       const modal = document.getElementById('imageModal');
       document.getElementById('modalImg').src = src;
@@ -470,50 +461,56 @@
       document.getElementById('imageModal').classList.remove('active');
     }
 
-    // 5. Universal Audio Handler (Works on both desktop click and mobile tap)
-    const bgMusic = document.getElementById('bgMusic');
-    const audioBtn = document.getElementById('audioBtn');
+    // 4. YouTube Background Audio Stream
+    let ytPlayer;
     let isPlaying = false;
 
-    function playAudio() {
-      bgMusic.play().then(() => {
-        audioBtn.querySelector('span').innerText = '🔊';
-        isPlaying = true;
-      }).catch(err => {
-        console.log("Audio playback blocked or file missing:", err);
+    function onYouTubeIframeAPIReady() {
+      ytPlayer = new YT.Player('youtube-player', {
+        height: '1',
+        width: '1',
+        videoId: 'XKVfwahVTsQ',
+        playerVars: {
+          'playsinline': 1,
+          'controls': 0,
+          'loop': 1,
+          'playlist': 'XKVfwahVTsQ'
+        }
       });
     }
 
     function toggleAudio() {
+      if (!ytPlayer || typeof ytPlayer.playVideo !== 'function') return;
       if (isPlaying) {
-        bgMusic.pause();
-        audioBtn.querySelector('span').innerText = '🎵';
+        ytPlayer.pauseVideo();
+        document.getElementById('audioBtn').querySelector('span').innerText = '🎵';
         isPlaying = false;
       } else {
-        playAudio();
+        ytPlayer.playVideo();
+        document.getElementById('audioBtn').querySelector('span').innerText = '🔊';
+        isPlaying = true;
       }
     }
 
-    audioBtn.addEventListener('click', (e) => {
+    document.getElementById('audioBtn').addEventListener('click', (e) => {
       e.stopPropagation();
       toggleAudio();
     });
 
-    // Start on first user interaction anywhere on screen
-    function startOnFirstInteraction() {
-      if (!isPlaying) {
-        playAudio();
+    function startMusicOnTap() {
+      if (!isPlaying && ytPlayer && typeof ytPlayer.playVideo === 'function') {
+        ytPlayer.playVideo();
+        document.getElementById('audioBtn').querySelector('span').innerText = '🔊';
+        isPlaying = true;
       }
-      document.removeEventListener('click', startOnFirstInteraction);
-      document.removeEventListener('touchstart', startOnFirstInteraction);
     }
 
-    document.addEventListener('click', startOnFirstInteraction, { once: true });
-    document.addEventListener('touchstart', startOnFirstInteraction, { once: true });
+    document.addEventListener('click', startMusicOnTap, { once: true });
+    document.addEventListener('touchstart', startMusicOnTap, { once: true });
 
-    // 6. Emoji Burst
+    // 5. Emoji Burst
     function triggerMegaRoseExplosion() {
-      const count = 55;
+      const count = 45;
       const emojis = ['🌹', '🌸', '💖', '✨'];
 
       for (let i = 0; i < count; i++) {
@@ -528,7 +525,7 @@
         rose.style.willChange = 'transform, opacity';
 
         let angle = Math.random() * Math.PI * 2;
-        let distance = Math.random() * (Math.min(window.innerWidth, window.innerHeight) * 0.42);
+        let distance = Math.random() * (Math.min(window.innerWidth, window.innerHeight) * 0.38);
         let dx = Math.cos(angle) * distance;
         let dy = Math.sin(angle) * distance;
         let rotation = (Math.random() - 0.5) * 360;
