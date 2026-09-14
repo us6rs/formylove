@@ -141,6 +141,8 @@
     text-transform: uppercase;
     box-shadow: 0 0 0 0 rgba(255, 93, 143, 0.5);
     animation: ring 2.2s infinite;
+    text-align: center;
+    transition: transform 0.15s ease;
   }
   @keyframes ring {
     0% { box-shadow: 0 0 0 0 rgba(255, 93, 143, 0.45); }
@@ -388,9 +390,9 @@
 
 <div class="aurora"><span></span><span></span><span></span></div>
 
-<div id="start-screen" onclick="openExperience()">
-  <div class="start-heart">💖</div>
-  <div class="start-btn">Open Letter</div>
+<div id="start-screen" onclick="handleStartClick()">
+  <div class="start-heart" id="startHeart">💖</div>
+  <div class="start-btn" id="startBtn">Open Letter</div>
 </div>
 
 <audio id="bgMusic" loop preload="auto">
@@ -445,6 +447,25 @@ function typeWriter() {
     setTimeout(typeWriter, 30);
   } else {
     document.querySelector('.cursor').style.display = 'none';
+  }
+}
+
+/* ---------- Start Screen Confirmation Sequence ---------- */
+let startStep = 0;
+function handleStartClick() {
+  const btn = document.getElementById('startBtn');
+  const heart = document.getElementById('startHeart');
+  
+  startStep++;
+  
+  if (startStep === 1) {
+    btn.textContent = "Are you sure? 🤔";
+    heart.textContent = "🤨";
+  } else if (startStep === 2) {
+    btn.textContent = "Are you really really sure? 🥺";
+    heart.textContent = "🫣";
+  } else if (startStep >= 3) {
+    openExperience();
   }
 }
 
@@ -650,7 +671,6 @@ function triggerMegaRoseExplosion(evt) {
 
   const originX = evt.clientX, originY = evt.clientY;
 
-  // expanding shockwave ring at the tap point
   const shock = document.createElement('div');
   shock.style.position = 'fixed';
   shock.style.left = originX + 'px';
@@ -670,12 +690,10 @@ function triggerMegaRoseExplosion(evt) {
   ], { duration: 700, easing: 'ease-out' });
   setTimeout(() => shock.remove(), 700);
 
-  // main burst, then a lighter trailing wave a beat later for a fountain feel
   const isMobile = window.innerWidth <= 600;
   launchBurst(originX, originY, isMobile ? 22 : 40, 0);
   launchBurst(originX, originY, isMobile ? 10 : 18, 220);
 
-  // soft screen flash
   const flash = document.createElement('div');
   flash.style.position = 'fixed';
   flash.style.inset = '0';
