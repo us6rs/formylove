@@ -16,7 +16,6 @@
       --border-color: rgba(244, 194, 194, 0.22);
     }
 
-    /* Complete Global Scrollbar Suppression */
     * {
       box-sizing: border-box;
       margin: 0;
@@ -36,7 +35,7 @@
     }
 
     html, body {
-      width: 100%;
+      width: 100vw;
       min-height: 100vh;
       min-height: 100dvh;
       background-color: var(--bg-dark);
@@ -49,10 +48,10 @@
       display: flex;
       justify-content: center;
       align-items: center;
-      padding: 20px 14px;
+      padding: 16px;
     }
 
-    /* Start Screen Overlay (Required for instant mobile audio unlock) */
+    /* Start Screen Overlay to enable autoplay */
     #start-screen {
       position: fixed;
       top: 0;
@@ -67,12 +66,18 @@
       justify-content: center;
       align-items: center;
       cursor: pointer;
-      transition: opacity 0.5s ease;
+      transition: opacity 0.6s ease, visibility 0.6s ease;
+    }
+
+    #start-screen.hidden {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
     }
 
     .start-heart {
-      font-size: 52px;
-      margin-bottom: 18px;
+      font-size: 50px;
+      margin-bottom: 20px;
       animation: pulse 1.4s infinite ease-in-out;
     }
 
@@ -80,9 +85,9 @@
       background: linear-gradient(135deg, var(--baby-pink) 0%, var(--rose-gold) 100%);
       color: #0d0608;
       font-weight: 800;
-      padding: 14px 30px;
+      padding: 14px 28px;
       border-radius: 30px;
-      font-size: 13px;
+      font-size: 14px;
       letter-spacing: 2px;
       text-transform: uppercase;
       box-shadow: 0 0 25px rgba(244, 194, 194, 0.3);
@@ -90,10 +95,10 @@
 
     @keyframes pulse {
       0%, 100% { transform: scale(1); }
-      50% { transform: scale(1.18); }
+      50% { transform: scale(1.2); }
     }
 
-    /* Background Floating Canvas */
+    /* Background Canvas */
     #canvas-bg {
       position: fixed;
       top: 0;
@@ -177,7 +182,6 @@
       text-shadow: 0 0 20px rgba(244, 194, 194, 0.3);
     }
 
-    /* Paragraph Box with Unlimited Height (No Scrollbars) */
     .letter-body {
       background: rgba(8, 8, 11, 0.75);
       padding: 16px 14px;
@@ -188,7 +192,6 @@
       line-height: 1.65;
       text-align: left;
       margin-bottom: 20px;
-      max-height: none !important;
       overflow: visible !important;
     }
 
@@ -275,7 +278,6 @@
       pointer-events: none;
     }
 
-    /* Modal Lightbox */
     .modal {
       position: fixed;
       top: 0;
@@ -336,7 +338,7 @@
 </head>
 <body>
 
-  <!-- Touch Overlay: Unlocks Audio Immediately -->
+  <!-- Entry Screen to enable immediate autoplay -->
   <div id="start-screen" onclick="openExperience()">
     <div class="start-heart">💖</div>
     <div class="start-btn">Open Letter</div>
@@ -403,90 +405,51 @@
     }
 
     let ytPlayer;
-    let ytReady = false;
     let isPlaying = false;
     const bgMusic = document.getElementById('bgMusic');
 
-    // YouTube's API calls this whenever it finishes loading -
-    // this can happen up to a couple seconds AFTER the user has
-    // already tapped "Open Letter", so we can't assume ytPlayer
-    // exists the instant openExperience() runs.
     function onYouTubeIframeAPIReady() {
       ytPlayer = new YT.Player('youtube-player', {
         height: '1',
         width: '1',
         videoId: 'XKVfwahVTsQ',
-        playerVars: { 'playsinline': 1, 'controls': 0, 'loop': 1, 'playlist': 'XKVfwahVTsQ' },
-        events: {
-          'onReady': function () { ytReady = true; }
-        }
+        playerVars: { 'playsinline': 1, 'controls': 0, 'loop': 1, 'playlist': 'XKVfwahVTsQ' }
       });
     }
 
     function openExperience() {
-      const overlay = document.getElementById('start-screen');
-      overlay.style.opacity = '0';
-      setTimeout(() => { overlay.style.display = 'none'; }, 500);
-
+      document.getElementById('start-screen').classList.add('hidden');
       typeWriter();
-      attemptPlay();
-    }
 
-    // Try the local mp3 first. If it fails (missing file, blocked
-    // format, etc.) or the file doesn't exist, fall back to YouTube -
-    // but retry for a few seconds since the YT API may still be
-    // initializing when this first runs.
-    function attemptPlay() {
-      if (bgMusic && bgMusic.querySelector('source').getAttribute('src')) {
-        bgMusic.play().then(() => {
-          isPlaying = true;
-          setAudioIcon('🔊');
-        }).catch(() => {
-          tryYouTubeWithRetry();
-        });
-      } else {
-        tryYouTubeWithRetry();
-      }
-    }
-
-    function tryYouTubeWithRetry(attemptsLeft = 30) {
-      if (ytPlayer && ytReady && typeof ytPlayer.playVideo === 'function') {
-        ytPlayer.playVideo();
+      // Try local audio first, fallback to YouTube
+      bgMusic.play().then(() => {
         isPlaying = true;
-        setAudioIcon('🔊');
-        return;
-      }
-      if (attemptsLeft > 0) {
-        // YT iframe API often isn't ready the instant the page loads -
-        // keep checking every 150ms for up to ~4.5s before giving up.
-        setTimeout(() => tryYouTubeWithRetry(attemptsLeft - 1), 150);
-      } else {
-        setAudioIcon('🎵');
-        isPlaying = false;
-      }
-    }
-
-    function setAudioIcon(icon) {
-      document.getElementById('audioBtn').querySelector('span').innerText = icon;
+        document.getElementById('audioBtn').querySelector('span').innerText = '🔊';
+      }).catch(() => {
+        if (ytPlayer && typeof ytPlayer.playVideo === 'function') {
+          ytPlayer.playVideo();
+          isPlaying = true;
+          document.getElementById('audioBtn').querySelector('span').innerText = '🔊';
+        }
+      });
     }
 
     function toggleAudio() {
       if (isPlaying) {
-        if (bgMusic) bgMusic.pause();
+        bgMusic.pause();
         if (ytPlayer && typeof ytPlayer.pauseVideo === 'function') ytPlayer.pauseVideo();
-        setAudioIcon('🎵');
+        document.getElementById('audioBtn').querySelector('span').innerText = '🎵';
         isPlaying = false;
       } else {
-        bgMusic.play().then(() => {
-          isPlaying = true;
-          setAudioIcon('🔊');
-        }).catch(() => {
-          tryYouTubeWithRetry();
+        bgMusic.play().catch(() => {
+          if (ytPlayer && typeof ytPlayer.playVideo === 'function') ytPlayer.playVideo();
         });
+        document.getElementById('audioBtn').querySelector('span').innerText = '🔊';
+        isPlaying = true;
       }
     }
 
-    // Canvas Background
+    // Canvas & Modal logic
     const canvas = document.getElementById('canvas-bg');
     const ctx = canvas.getContext('2d');
     function resizeCanvas() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
@@ -529,7 +492,7 @@
         rose.style.fontSize = (Math.random() * 14 + 16) + 'px';
         rose.style.pointerEvents = 'none';
         rose.style.zIndex = '9999';
-
+        
         let angle = Math.random() * Math.PI * 2;
         let distance = Math.random() * (Math.min(window.innerWidth, window.innerHeight) * 0.38);
         let dx = Math.cos(angle) * distance;
