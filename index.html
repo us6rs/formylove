@@ -7,7 +7,7 @@
   <style>
     :root {
       --bg-dark: #070709;
-      --card-bg: rgba(15, 15, 20, 0.85);
+      --card-bg: rgba(15, 15, 20, 0.88);
       --baby-pink: #f4c2c2;
       --rose-gold: #e07a5f;
       --hot-rose: #ff4d6d;
@@ -28,27 +28,33 @@
     }
 
     html, body {
-      width: 100vw;
-      height: 100vh;
-      height: 100dvh;
-      overflow: hidden;
-      position: fixed;
-      top: 0;
-      left: 0;
+      width: 100%;
+      min-height: 100vh;
+      min-height: 100dvh;
+      background-color: var(--bg-dark);
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      color: var(--text-main);
+      overflow-x: hidden;
+    }
+
+    /* Hide standard scrollbars visually while retaining smooth scrolling */
+    html::-webkit-scrollbar, body::-webkit-scrollbar {
+      display: none;
+    }
+    html, body {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
     }
 
     body {
       display: flex;
       justify-content: center;
       align-items: center;
-      background-color: var(--bg-dark);
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      padding: 24px 16px;
       perspective: 1000px;
-      color: var(--text-main);
-      padding: 16px;
     }
 
-    /* Background Animation */
+    /* Animated Canvas Background */
     #canvas-bg {
       position: fixed;
       top: 0;
@@ -61,10 +67,10 @@
 
     .ambient-glow {
       position: fixed;
-      width: 80vw;
-      max-width: 450px;
-      height: 80vw;
-      max-height: 450px;
+      width: 90vw;
+      max-width: 500px;
+      height: 90vw;
+      max-height: 500px;
       border-radius: 50%;
       background: radial-gradient(circle, rgba(224, 122, 95, 0.14) 0%, rgba(244, 194, 194, 0.04) 50%, transparent 70%);
       top: 50%;
@@ -79,12 +85,12 @@
       top: env(safe-area-inset-top, 16px);
       right: 16px;
       z-index: 100;
-      background: rgba(20, 20, 25, 0.7);
+      background: rgba(20, 20, 25, 0.75);
       backdrop-filter: blur(15px);
       -webkit-backdrop-filter: blur(15px);
       border: 1px solid var(--border-color);
-      width: 44px;
-      height: 44px;
+      width: 46px;
+      height: 46px;
       border-radius: 50%;
       display: flex;
       justify-content: center;
@@ -93,22 +99,22 @@
       color: var(--baby-pink);
       font-size: 18px;
       box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+      transition: transform 0.2s ease;
     }
 
     .audio-control:active {
       transform: scale(0.92);
     }
 
-    /* Main Card */
+    /* Main Card Layout */
     .card-wrapper {
       width: 100%;
       max-width: 520px;
-      max-height: 90vh;
-      max-height: 90dvh;
       z-index: 10;
       transform-style: preserve-3d;
       will-change: transform;
       transition: transform 0.1s ease-out;
+      margin: auto;
     }
 
     .card {
@@ -116,10 +122,10 @@
       backdrop-filter: blur(20px);
       -webkit-backdrop-filter: blur(20px);
       border: 1px solid var(--border-color);
-      border-radius: 24px;
-      padding: 24px 18px;
-      box-shadow: 0 20px 45px rgba(0, 0, 0, 0.75), 
-                  0 0 30px rgba(244, 194, 194, 0.12);
+      border-radius: 28px;
+      padding: 30px 22px;
+      box-shadow: 0 20px 45px rgba(0, 0, 0, 0.8), 
+                  0 0 35px rgba(244, 194, 194, 0.12);
       text-align: center;
       position: relative;
     }
@@ -128,18 +134,18 @@
       display: inline-flex;
       align-items: center;
       gap: 5px;
-      font-size: 10px;
+      font-size: 11px;
       text-transform: uppercase;
       letter-spacing: 2.5px;
       color: var(--rose-gold);
-      margin-bottom: 6px;
+      margin-bottom: 8px;
       font-weight: 700;
     }
 
     h1 {
       color: var(--baby-pink);
-      font-size: clamp(20px, 5.5vw, 26px);
-      margin-bottom: 16px;
+      font-size: clamp(22px, 6vw, 28px);
+      margin-bottom: 20px;
       font-weight: 700;
       letter-spacing: 0.5px;
       text-shadow: 0 0 20px rgba(244, 194, 194, 0.3);
@@ -157,20 +163,18 @@
       45% { transform: scale(1.1); }
     }
 
+    /* Full Letter Text Box (No inner scrollbars) */
     .letter-body {
       background: rgba(8, 8, 11, 0.75);
-      padding: 16px 14px;
-      border-radius: 16px;
+      padding: 20px 18px;
+      border-radius: 18px;
       border-left: 3px solid var(--baby-pink);
       border-top: 1px solid rgba(255, 255, 255, 0.05);
-      font-size: clamp(13px, 3.8vw, 15px);
-      line-height: 1.7;
+      font-size: clamp(14px, 4vw, 15.5px);
+      line-height: 1.75;
       text-align: left;
-      margin-bottom: 20px;
-      max-height: 200px;
-      overflow-y: auto;
+      margin-bottom: 24px;
       box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.5);
-      -webkit-overflow-scrolling: touch;
     }
 
     #typewriter-text {
@@ -196,25 +200,25 @@
 
     .gallery-title {
       color: var(--text-muted);
-      font-size: 10px;
+      font-size: 11px;
       text-transform: uppercase;
       letter-spacing: 2px;
-      margin-bottom: 12px;
+      margin-bottom: 14px;
     }
 
     .photo-grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      gap: 8px;
-      margin-bottom: 20px;
+      gap: 10px;
+      margin-bottom: 24px;
     }
 
     .photo-card {
       background: rgba(22, 22, 28, 0.85);
-      border-radius: 12px;
-      padding: 4px;
+      border-radius: 14px;
+      padding: 5px;
       border: 1px solid var(--border-color);
-      transition: transform 0.2s ease;
+      transition: transform 0.2s ease, border-color 0.2s ease;
       cursor: pointer;
     }
 
@@ -225,9 +229,9 @@
 
     .photo-card img {
       width: 100%;
-      height: clamp(80px, 22vw, 120px);
+      height: clamp(85px, 24vw, 125px);
       object-fit: cover;
-      border-radius: 8px;
+      border-radius: 10px;
       display: block;
     }
 
@@ -236,17 +240,17 @@
       color: #0d0608;
       border: none;
       width: 100%;
-      max-width: 260px;
-      min-height: 48px;
-      padding: 12px 20px;
-      font-size: 13px;
+      max-width: 270px;
+      min-height: 50px;
+      padding: 14px 22px;
+      font-size: 14px;
       font-weight: 800;
       border-radius: 30px;
       cursor: pointer;
       text-transform: uppercase;
       letter-spacing: 2px;
-      transition: transform 0.15s ease;
-      box-shadow: 0 6px 20px rgba(224, 122, 95, 0.35);
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+      box-shadow: 0 6px 22px rgba(224, 122, 95, 0.35);
       outline: none;
       position: relative;
       z-index: 20;
@@ -304,8 +308,8 @@
       right: -15px;
       background: var(--baby-pink);
       color: var(--bg-dark);
-      width: 32px;
-      height: 32px;
+      width: 34px;
+      height: 34px;
       border-radius: 50%;
       display: flex;
       justify-content: center;
@@ -318,7 +322,7 @@
 </head>
 <body>
 
-  <!-- Audio Element -->
+  <!-- Hidden Audio Player -->
   <audio id="bgMusic" loop preload="auto">
     <source src="song.mp3" type="audio/mpeg">
   </audio>
@@ -379,7 +383,7 @@
     }
     window.onload = typeWriter;
 
-    // 2. Mobile Particle Canvas
+    // 2. Dynamic Particle Canvas
     const canvas = document.getElementById('canvas-bg');
     const ctx = canvas.getContext('2d');
     
@@ -414,7 +418,7 @@
       }
     }
 
-    for (let i = 0; i < 35; i++) particles.push(new Particle());
+    for (let i = 0; i < 40; i++) particles.push(new Particle());
 
     function addTrail(x, y) {
       trail.push({ x, y, size: 6, opacity: 0.8 });
@@ -455,7 +459,7 @@
       });
     }
 
-    // 4. Lightbox Modal
+    // 4. Modal
     function openModal(src) {
       const modal = document.getElementById('imageModal');
       document.getElementById('modalImg').src = src;
@@ -466,10 +470,19 @@
       document.getElementById('imageModal').classList.remove('active');
     }
 
-    // 5. Background Music Handler (Starts on first tap)
+    // 5. Universal Audio Handler (Works on both desktop click and mobile tap)
     const bgMusic = document.getElementById('bgMusic');
     const audioBtn = document.getElementById('audioBtn');
     let isPlaying = false;
+
+    function playAudio() {
+      bgMusic.play().then(() => {
+        audioBtn.querySelector('span').innerText = '🔊';
+        isPlaying = true;
+      }).catch(err => {
+        console.log("Audio playback blocked or file missing:", err);
+      });
+    }
 
     function toggleAudio() {
       if (isPlaying) {
@@ -477,27 +490,30 @@
         audioBtn.querySelector('span').innerText = '🎵';
         isPlaying = false;
       } else {
-        bgMusic.play().then(() => {
-          audioBtn.querySelector('span').innerText = '🔊';
-          isPlaying = true;
-        }).catch(e => console.log(e));
+        playAudio();
       }
     }
 
-    audioBtn.addEventListener('click', toggleAudio);
+    audioBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      toggleAudio();
+    });
 
-    document.addEventListener('touchstart', function startOnFirstTap() {
+    // Start on first user interaction anywhere on screen
+    function startOnFirstInteraction() {
       if (!isPlaying) {
-        bgMusic.play().then(() => {
-          audioBtn.querySelector('span').innerText = '🔊';
-          isPlaying = true;
-        }).catch(() => {});
+        playAudio();
       }
-    }, { once: true });
+      document.removeEventListener('click', startOnFirstInteraction);
+      document.removeEventListener('touchstart', startOnFirstInteraction);
+    }
+
+    document.addEventListener('click', startOnFirstInteraction, { once: true });
+    document.addEventListener('touchstart', startOnFirstInteraction, { once: true });
 
     // 6. Emoji Burst
     function triggerMegaRoseExplosion() {
-      const count = 50;
+      const count = 55;
       const emojis = ['🌹', '🌸', '💖', '✨'];
 
       for (let i = 0; i < count; i++) {
@@ -512,7 +528,7 @@
         rose.style.willChange = 'transform, opacity';
 
         let angle = Math.random() * Math.PI * 2;
-        let distance = Math.random() * (Math.min(window.innerWidth, window.innerHeight) * 0.4);
+        let distance = Math.random() * (Math.min(window.innerWidth, window.innerHeight) * 0.42);
         let dx = Math.cos(angle) * distance;
         let dy = Math.sin(angle) * distance;
         let rotation = (Math.random() - 0.5) * 360;
