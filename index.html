@@ -7,7 +7,7 @@
   <style>
     :root {
       --bg-dark: #070709;
-      --card-bg: rgba(15, 15, 20, 0.88);
+      --card-bg: rgba(15, 15, 20, 0.92);
       --baby-pink: #f4c2c2;
       --rose-gold: #e07a5f;
       --hot-rose: #ff4d6d;
@@ -16,7 +16,6 @@
       --border-color: rgba(244, 194, 194, 0.22);
     }
 
-    /* Complete Scrollbar Suppression */
     * {
       box-sizing: border-box;
       margin: 0;
@@ -37,25 +36,69 @@
 
     html, body {
       width: 100vw;
-      height: 100vh;
-      height: 100dvh;
-      overflow: hidden !important;
-      position: fixed;
-      top: 0;
-      left: 0;
+      min-height: 100vh;
+      min-height: 100dvh;
       background-color: var(--bg-dark);
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
       color: var(--text-main);
+      overflow-x: hidden;
     }
 
     body {
       display: flex;
       justify-content: center;
       align-items: center;
-      padding: 12px;
+      padding: 16px;
     }
 
-    /* Background Animation Canvas */
+    /* Start Screen Overlay to enable autoplay */
+    #start-screen {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      height: 100dvh;
+      background: #070709;
+      z-index: 9999;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+      transition: opacity 0.6s ease, visibility 0.6s ease;
+    }
+
+    #start-screen.hidden {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+    }
+
+    .start-heart {
+      font-size: 50px;
+      margin-bottom: 20px;
+      animation: pulse 1.4s infinite ease-in-out;
+    }
+
+    .start-btn {
+      background: linear-gradient(135deg, var(--baby-pink) 0%, var(--rose-gold) 100%);
+      color: #0d0608;
+      font-weight: 800;
+      padding: 14px 28px;
+      border-radius: 30px;
+      font-size: 14px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      box-shadow: 0 0 25px rgba(244, 194, 194, 0.3);
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.2); }
+    }
+
+    /* Background Canvas */
     #canvas-bg {
       position: fixed;
       top: 0;
@@ -68,9 +111,9 @@
 
     .ambient-glow {
       position: fixed;
-      width: 80vw;
+      width: 90vw;
       max-width: 450px;
-      height: 80vw;
+      height: 90vw;
       max-height: 450px;
       border-radius: 50%;
       background: radial-gradient(circle, rgba(224, 122, 95, 0.14) 0%, rgba(244, 194, 194, 0.04) 50%, transparent 70%);
@@ -99,18 +142,13 @@
       cursor: pointer;
       color: var(--baby-pink);
       font-size: 18px;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.4);
     }
 
-    /* Main Card Layout Fits Viewport */
     .card-wrapper {
       width: 100%;
       max-width: 480px;
-      max-height: 96dvh;
       z-index: 10;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
+      margin: auto;
     }
 
     .card {
@@ -119,10 +157,9 @@
       -webkit-backdrop-filter: blur(20px);
       border: 1px solid var(--border-color);
       border-radius: 24px;
-      padding: 20px 16px;
+      padding: 24px 18px;
       box-shadow: 0 20px 45px rgba(0, 0, 0, 0.8), 0 0 35px rgba(244, 194, 194, 0.12);
       text-align: center;
-      position: relative;
     }
 
     .header-tag {
@@ -140,35 +177,22 @@
     h1 {
       color: var(--baby-pink);
       font-size: clamp(20px, 5vw, 24px);
-      margin-bottom: 14px;
+      margin-bottom: 16px;
       font-weight: 700;
-      letter-spacing: 0.5px;
       text-shadow: 0 0 20px rgba(244, 194, 194, 0.3);
-    }
-
-    .heart-icon {
-      display: inline-block;
-      animation: heartbeat 1.8s ease-in-out infinite;
-    }
-
-    @keyframes heartbeat {
-      0%, 100% { transform: scale(1); }
-      15% { transform: scale(1.2); }
-      30% { transform: scale(1); }
-      45% { transform: scale(1.1); }
     }
 
     .letter-body {
       background: rgba(8, 8, 11, 0.75);
-      padding: 14px 12px;
+      padding: 16px 14px;
       border-radius: 16px;
       border-left: 3px solid var(--baby-pink);
       border-top: 1px solid rgba(255, 255, 255, 0.05);
-      font-size: clamp(13px, 3.6vw, 14.5px);
+      font-size: clamp(13px, 3.8vw, 14.5px);
       line-height: 1.65;
       text-align: left;
-      margin-bottom: 16px;
-      box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.5);
+      margin-bottom: 20px;
+      overflow: visible !important;
     }
 
     #typewriter-text {
@@ -197,14 +221,14 @@
       font-size: 10px;
       text-transform: uppercase;
       letter-spacing: 2px;
-      margin-bottom: 10px;
+      margin-bottom: 12px;
     }
 
     .photo-grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
       gap: 8px;
-      margin-bottom: 18px;
+      margin-bottom: 20px;
     }
 
     .photo-card {
@@ -215,14 +239,9 @@
       cursor: pointer;
     }
 
-    .photo-card:active {
-      transform: scale(0.95);
-      border-color: var(--baby-pink);
-    }
-
     .photo-card img {
       width: 100%;
-      height: clamp(70px, 18vh, 105px);
+      height: clamp(80px, 20vw, 110px);
       object-fit: cover;
       border-radius: 8px;
       display: block;
@@ -234,8 +253,8 @@
       border: none;
       width: 100%;
       max-width: 250px;
-      min-height: 46px;
-      padding: 10px 18px;
+      min-height: 48px;
+      padding: 12px 20px;
       font-size: 13px;
       font-weight: 800;
       border-radius: 30px;
@@ -243,16 +262,12 @@
       text-transform: uppercase;
       letter-spacing: 2px;
       box-shadow: 0 6px 20px rgba(224, 122, 95, 0.35);
-      outline: none;
-      position: relative;
-      z-index: 20;
     }
 
     .btn:active {
       transform: scale(0.95);
     }
 
-    /* Offscreen Invisible YouTube Player */
     #youtube-player {
       position: absolute;
       top: -9999px;
@@ -263,7 +278,6 @@
       pointer-events: none;
     }
 
-    /* Lightbox Modal */
     .modal {
       position: fixed;
       top: 0;
@@ -324,20 +338,28 @@
 </head>
 <body>
 
+  <!-- Entry Screen to enable immediate autoplay -->
+  <div id="start-screen" onclick="openExperience()">
+    <div class="start-heart">💖</div>
+    <div class="start-btn">Open Letter</div>
+  </div>
+
+  <audio id="bgMusic" loop preload="auto">
+    <source src="song.mp3" type="audio/mpeg">
+  </audio>
+  <div id="youtube-player"></div>
+
   <canvas id="canvas-bg"></canvas>
   <div class="ambient-glow"></div>
 
-  <!-- Invisible YouTube Background Audio Container -->
-  <div id="youtube-player"></div>
-
-  <div class="audio-control" id="audioBtn" title="Toggle Music">
-    <span>🎵</span>
+  <div class="audio-control" id="audioBtn" onclick="toggleAudio()">
+    <span>🔊</span>
   </div>
 
-  <div class="card-wrapper" id="cardWrapper">
+  <div class="card-wrapper">
     <div class="card">
-      <span class="header-tag">Private Letter <span class="heart-icon">✨</span></span>
-      <h1>To My Safe Space <span class="heart-icon">🤍</span></h1>
+      <span class="header-tag">Private Letter ✨</span>
+      <h1>To My Safe Space 🤍</h1>
 
       <div class="letter-body">
         <span id="typewriter-text"></span><span class="cursor"></span>
@@ -367,13 +389,10 @@
     </div>
   </div>
 
-  <!-- Load YouTube API -->
   <script src="https://www.youtube.com/iframe_api"></script>
-
   <script>
-    // 1. Typewriter Effect
     const message = "ya ru7i,\n\nYour letter completely made my day. Reading your words when I was down made me smile so hard and reminded me how lucky I am to have you in my life.\n\nYou said 'I love you' doesn't feel like enough sometimes, and I feel the exact same way. You're my comfort zone, my safe space, and my favorite part of every day.\n\nThank you for always caring about me. I definitely love you more though. ❤️";
-    
+
     let index = 0;
     function typeWriter() {
       if (index < message.length) {
@@ -384,136 +403,87 @@
         document.querySelector('.cursor').style.display = 'none';
       }
     }
-    window.onload = typeWriter;
 
-    // 2. Canvas Animation
-    const canvas = document.getElementById('canvas-bg');
-    const ctx = canvas.getContext('2d');
-    
-    function resizeCanvas() {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
-    }
-    resizeCanvas();
-    window.addEventListener('resize', resizeCanvas);
-
-    const particles = [];
-    const trail = [];
-
-    class Particle {
-      constructor() { this.reset(); }
-      reset() {
-        this.x = Math.random() * canvas.width;
-        this.y = Math.random() * canvas.height;
-        this.size = Math.random() * 2 + 0.5;
-        this.speedY = -(Math.random() * 0.3 + 0.1);
-        this.opacity = Math.random() * 0.5 + 0.2;
-      }
-      update() {
-        this.y += this.speedY;
-        if (this.y < 0) this.y = canvas.height;
-      }
-      draw() {
-        ctx.fillStyle = `rgba(244, 194, 194, ${this.opacity})`;
-        ctx.beginPath();
-        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-        ctx.fill();
-      }
-    }
-
-    for (let i = 0; i < 35; i++) particles.push(new Particle());
-
-    function addTrail(x, y) {
-      trail.push({ x, y, size: 6, opacity: 0.8 });
-      if (trail.length > 12) trail.shift();
-    }
-
-    window.addEventListener('touchmove', (e) => {
-      if (e.touches.length > 0) addTrail(e.touches[0].clientX, e.touches[0].clientY);
-    }, { passive: true });
-    window.addEventListener('mousemove', (e) => addTrail(e.clientX, e.clientY));
-
-    function animateCanvas() {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      particles.forEach(p => { p.update(); p.draw(); });
-
-      for (let i = 0; i < trail.length; i++) {
-        let t = trail[i];
-        t.size *= 0.92;
-        t.opacity *= 0.9;
-        ctx.fillStyle = `rgba(244, 194, 194, ${t.opacity})`;
-        ctx.beginPath();
-        ctx.arc(t.x, t.y, Math.max(t.size, 1), 0, Math.PI * 2);
-        ctx.fill();
-      }
-      requestAnimationFrame(animateCanvas);
-    }
-    animateCanvas();
-
-    // 3. Modal Image Lightbox
-    function openModal(src) {
-      const modal = document.getElementById('imageModal');
-      document.getElementById('modalImg').src = src;
-      modal.classList.add('active');
-    }
-
-    function closeModal() {
-      document.getElementById('imageModal').classList.remove('active');
-    }
-
-    // 4. YouTube Background Audio Stream
     let ytPlayer;
     let isPlaying = false;
+    const bgMusic = document.getElementById('bgMusic');
 
     function onYouTubeIframeAPIReady() {
       ytPlayer = new YT.Player('youtube-player', {
         height: '1',
         width: '1',
         videoId: 'XKVfwahVTsQ',
-        playerVars: {
-          'playsinline': 1,
-          'controls': 0,
-          'loop': 1,
-          'playlist': 'XKVfwahVTsQ'
+        playerVars: { 'playsinline': 1, 'controls': 0, 'loop': 1, 'playlist': 'XKVfwahVTsQ' }
+      });
+    }
+
+    function openExperience() {
+      document.getElementById('start-screen').classList.add('hidden');
+      typeWriter();
+
+      // Try local audio first, fallback to YouTube
+      bgMusic.play().then(() => {
+        isPlaying = true;
+        document.getElementById('audioBtn').querySelector('span').innerText = '🔊';
+      }).catch(() => {
+        if (ytPlayer && typeof ytPlayer.playVideo === 'function') {
+          ytPlayer.playVideo();
+          isPlaying = true;
+          document.getElementById('audioBtn').querySelector('span').innerText = '🔊';
         }
       });
     }
 
     function toggleAudio() {
-      if (!ytPlayer || typeof ytPlayer.playVideo !== 'function') return;
       if (isPlaying) {
-        ytPlayer.pauseVideo();
+        bgMusic.pause();
+        if (ytPlayer && typeof ytPlayer.pauseVideo === 'function') ytPlayer.pauseVideo();
         document.getElementById('audioBtn').querySelector('span').innerText = '🎵';
         isPlaying = false;
       } else {
-        ytPlayer.playVideo();
+        bgMusic.play().catch(() => {
+          if (ytPlayer && typeof ytPlayer.playVideo === 'function') ytPlayer.playVideo();
+        });
         document.getElementById('audioBtn').querySelector('span').innerText = '🔊';
         isPlaying = true;
       }
     }
 
-    document.getElementById('audioBtn').addEventListener('click', (e) => {
-      e.stopPropagation();
-      toggleAudio();
-    });
+    // Canvas & Modal logic
+    const canvas = document.getElementById('canvas-bg');
+    const ctx = canvas.getContext('2d');
+    function resizeCanvas() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
+    resizeCanvas();
+    window.addEventListener('resize', resizeCanvas);
 
-    function startMusicOnTap() {
-      if (!isPlaying && ytPlayer && typeof ytPlayer.playVideo === 'function') {
-        ytPlayer.playVideo();
-        document.getElementById('audioBtn').querySelector('span').innerText = '🔊';
-        isPlaying = true;
-      }
+    const particles = Array.from({ length: 35 }, () => ({
+      x: Math.random() * canvas.width,
+      y: Math.random() * canvas.height,
+      size: Math.random() * 2 + 0.5,
+      speedY: -(Math.random() * 0.3 + 0.1),
+      opacity: Math.random() * 0.5 + 0.2,
+      update() { this.y += this.speedY; if (this.y < 0) this.y = canvas.height; },
+      draw() { ctx.fillStyle = `rgba(244, 194, 194, ${this.opacity})`; ctx.beginPath(); ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2); ctx.fill(); }
+    }));
+
+    function animateCanvas() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      particles.forEach(p => { p.update(); p.draw(); });
+      requestAnimationFrame(animateCanvas);
+    }
+    animateCanvas();
+
+    function openModal(src) {
+      document.getElementById('modalImg').src = src;
+      document.getElementById('imageModal').classList.add('active');
+    }
+    function closeModal() {
+      document.getElementById('imageModal').classList.remove('active');
     }
 
-    document.addEventListener('click', startMusicOnTap, { once: true });
-    document.addEventListener('touchstart', startMusicOnTap, { once: true });
-
-    // 5. Emoji Burst
     function triggerMegaRoseExplosion() {
-      const count = 45;
       const emojis = ['🌹', '🌸', '💖', '✨'];
-
-      for (let i = 0; i < count; i++) {
+      for (let i = 0; i < 45; i++) {
         let rose = document.createElement('div');
         rose.innerText = emojis[Math.floor(Math.random() * emojis.length)];
         rose.style.position = 'fixed';
@@ -521,25 +491,20 @@
         rose.style.top = '50%';
         rose.style.fontSize = (Math.random() * 14 + 16) + 'px';
         rose.style.pointerEvents = 'none';
-        rose.style.zIndex = '999';
-        rose.style.willChange = 'transform, opacity';
-
+        rose.style.zIndex = '9999';
+        
         let angle = Math.random() * Math.PI * 2;
         let distance = Math.random() * (Math.min(window.innerWidth, window.innerHeight) * 0.38);
         let dx = Math.cos(angle) * distance;
         let dy = Math.sin(angle) * distance;
-        let rotation = (Math.random() - 0.5) * 360;
 
         rose.animate([
-          { transform: `translate3d(-50%, -50%, 0) scale(0.3) rotate(0deg)`, opacity: 1 },
-          { transform: `translate3d(calc(-50% + ${dx}px), calc(-50% + ${dy}px), 0) scale(1.2) rotate(${rotation}deg)`, opacity: 0 }
-        ], {
-          duration: 1300 + Math.random() * 500,
-          easing: 'cubic-bezier(0.1, 0.8, 0.25, 1)'
-        });
+          { transform: `translate3d(-50%, -50%, 0) scale(0.3)`, opacity: 1 },
+          { transform: `translate3d(calc(-50% + ${dx}px), calc(-50% + ${dy}px), 0) scale(1.2)`, opacity: 0 }
+        ], { duration: 1500, easing: 'ease-out' });
 
         document.body.appendChild(rose);
-        setTimeout(() => rose.remove(), 1800);
+        setTimeout(() => rose.remove(), 1500);
       }
     }
   </script>
