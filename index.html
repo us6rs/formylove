@@ -462,8 +462,8 @@ function handleStartClick() {
     btn.textContent = "Are you sure? 🤔";
     heart.textContent = "🤨";
   } else if (startStep === 2) {
-    btn.textContent = "Are you really really sure? 🥺";
-    heart.textContent = "🫣";
+    btn.textContent = "Are you really really sure? 🫪";
+    heart.textContent = "🫪";
   } else if (startStep >= 3) {
     openExperience();
   }
@@ -526,7 +526,7 @@ function toggleAudio() {
   }
 }
 
-/* ---------- Simple animated equalizer (no Web Audio graph, so no CORS dependency) ---------- */
+/* ---------- Simple animated equalizer ---------- */
 function startVisualizer() {
   document.getElementById('eq').classList.add('eq-live');
 }
@@ -534,7 +534,7 @@ function stopVisualizer() {
   document.getElementById('eq').classList.remove('eq-live');
 }
 
-/* ---------- Diagnostics: log the real reason if the mp3 fails ---------- */
+/* ---------- Diagnostics ---------- */
 bgMusic.addEventListener('error', () => {
   const err = bgMusic.error;
   const reasons = { 1: 'load aborted', 2: 'network error', 3: 'decode error - file may be corrupt or not a valid mp3', 4: 'source not supported - check the file path/name is exactly "song.mp3" and it was actually committed to the repo' };
@@ -542,7 +542,7 @@ bgMusic.addEventListener('error', () => {
 });
 bgMusic.addEventListener('canplay', () => console.log('bgMusic loaded fine, ready to play.'));
 
-/* ---------- 3D tilt on the card (mouse/trackpad only - skipped on touch) ---------- */
+/* ---------- 3D tilt on the card ---------- */
 const card = document.getElementById('card');
 const wrapper = document.getElementById('cardWrapper');
 const hasFinePointer = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
