@@ -16,6 +16,7 @@
       --border-color: rgba(244, 194, 194, 0.22);
     }
 
+    /* Complete Global Scrollbar Suppression */
     * {
       box-sizing: border-box;
       margin: 0;
@@ -35,7 +36,7 @@
     }
 
     html, body {
-      width: 100vw;
+      width: 100%;
       min-height: 100vh;
       min-height: 100dvh;
       background-color: var(--bg-dark);
@@ -48,10 +49,10 @@
       display: flex;
       justify-content: center;
       align-items: center;
-      padding: 16px;
+      padding: 20px 14px;
     }
 
-    /* Start Screen Overlay to enable autoplay */
+    /* Start Screen Overlay (Required for instant mobile audio unlock) */
     #start-screen {
       position: fixed;
       top: 0;
@@ -66,18 +67,12 @@
       justify-content: center;
       align-items: center;
       cursor: pointer;
-      transition: opacity 0.6s ease, visibility 0.6s ease;
-    }
-
-    #start-screen.hidden {
-      opacity: 0;
-      visibility: hidden;
-      pointer-events: none;
+      transition: opacity 0.5s ease;
     }
 
     .start-heart {
-      font-size: 50px;
-      margin-bottom: 20px;
+      font-size: 52px;
+      margin-bottom: 18px;
       animation: pulse 1.4s infinite ease-in-out;
     }
 
@@ -85,9 +80,9 @@
       background: linear-gradient(135deg, var(--baby-pink) 0%, var(--rose-gold) 100%);
       color: #0d0608;
       font-weight: 800;
-      padding: 14px 28px;
+      padding: 14px 30px;
       border-radius: 30px;
-      font-size: 14px;
+      font-size: 13px;
       letter-spacing: 2px;
       text-transform: uppercase;
       box-shadow: 0 0 25px rgba(244, 194, 194, 0.3);
@@ -95,10 +90,10 @@
 
     @keyframes pulse {
       0%, 100% { transform: scale(1); }
-      50% { transform: scale(1.2); }
+      50% { transform: scale(1.18); }
     }
 
-    /* Background Canvas */
+    /* Background Floating Canvas */
     #canvas-bg {
       position: fixed;
       top: 0;
@@ -182,6 +177,7 @@
       text-shadow: 0 0 20px rgba(244, 194, 194, 0.3);
     }
 
+    /* Paragraph Box with Unlimited Height (No Scrollbars) */
     .letter-body {
       background: rgba(8, 8, 11, 0.75);
       padding: 16px 14px;
@@ -192,6 +188,7 @@
       line-height: 1.65;
       text-align: left;
       margin-bottom: 20px;
+      max-height: none !important;
       overflow: visible !important;
     }
 
@@ -278,6 +275,7 @@
       pointer-events: none;
     }
 
+    /* Modal Lightbox */
     .modal {
       position: fixed;
       top: 0;
@@ -338,7 +336,7 @@
 </head>
 <body>
 
-  <!-- Entry Screen to enable immediate autoplay -->
+  <!-- Touch Overlay: Unlocks Audio Immediately -->
   <div id="start-screen" onclick="openExperience()">
     <div class="start-heart">💖</div>
     <div class="start-btn">Open Letter</div>
@@ -418,38 +416,45 @@
     }
 
     function openExperience() {
-      document.getElementById('start-screen').classList.add('hidden');
+      const overlay = document.getElementById('start-screen');
+      overlay.style.opacity = '0';
+      setTimeout(() => { overlay.style.display = 'none'; }, 500);
+
       typeWriter();
 
-      // Try local audio first, fallback to YouTube
-      bgMusic.play().then(() => {
-        isPlaying = true;
-        document.getElementById('audioBtn').querySelector('span').innerText = '🔊';
-      }).catch(() => {
-        if (ytPlayer && typeof ytPlayer.playVideo === 'function') {
-          ytPlayer.playVideo();
+      // Audio trigger on user touch
+      if (bgMusic) {
+        bgMusic.play().then(() => {
           isPlaying = true;
           document.getElementById('audioBtn').querySelector('span').innerText = '🔊';
-        }
-      });
+        }).catch(() => {
+          if (ytPlayer && typeof ytPlayer.playVideo === 'function') {
+            ytPlayer.playVideo();
+            isPlaying = true;
+            document.getElementById('audioBtn').querySelector('span').innerText = '🔊';
+          }
+        });
+      }
     }
 
     function toggleAudio() {
       if (isPlaying) {
-        bgMusic.pause();
+        if (bgMusic) bgMusic.pause();
         if (ytPlayer && typeof ytPlayer.pauseVideo === 'function') ytPlayer.pauseVideo();
         document.getElementById('audioBtn').querySelector('span').innerText = '🎵';
         isPlaying = false;
       } else {
-        bgMusic.play().catch(() => {
-          if (ytPlayer && typeof ytPlayer.playVideo === 'function') ytPlayer.playVideo();
-        });
+        if (bgMusic) {
+          bgMusic.play().catch(() => {
+            if (ytPlayer && typeof ytPlayer.playVideo === 'function') ytPlayer.playVideo();
+          });
+        }
         document.getElementById('audioBtn').querySelector('span').innerText = '🔊';
         isPlaying = true;
       }
     }
 
-    // Canvas & Modal logic
+    // Canvas Background
     const canvas = document.getElementById('canvas-bg');
     const ctx = canvas.getContext('2d');
     function resizeCanvas() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
