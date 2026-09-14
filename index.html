@@ -27,7 +27,6 @@
       touch-action: manipulation;
     }
 
-    /* Fixed Body Prevents Mobile Safari Overflow Glitches */
     html, body {
       width: 100vw;
       height: 100vh;
@@ -49,7 +48,7 @@
       padding: 16px;
     }
 
-    /* Dynamic Particle Canvas */
+    /* Background Animation */
     #canvas-bg {
       position: fixed;
       top: 0;
@@ -100,7 +99,7 @@
       transform: scale(0.92);
     }
 
-    /* Main Card Wrapper */
+    /* Main Card */
     .card-wrapper {
       width: 100%;
       max-width: 520px;
@@ -257,7 +256,7 @@
       transform: scale(0.95);
     }
 
-    /* Mobile Lightbox Modal */
+    /* Modal */
     .modal {
       position: fixed;
       top: 0;
@@ -319,10 +318,15 @@
 </head>
 <body>
 
+  <!-- Audio Element -->
+  <audio id="bgMusic" loop preload="auto">
+    <source src="song.mp3" type="audio/mpeg">
+  </audio>
+
   <canvas id="canvas-bg"></canvas>
   <div class="ambient-glow"></div>
 
-  <div class="audio-control" id="audioBtn" title="Play Chime">
+  <div class="audio-control" id="audioBtn" title="Toggle Music">
     <span>🎵</span>
   </div>
 
@@ -375,7 +379,7 @@
     }
     window.onload = typeWriter;
 
-    // 2. Mobile Touch Particle Canvas
+    // 2. Mobile Particle Canvas
     const canvas = document.getElementById('canvas-bg');
     const ctx = canvas.getContext('2d');
     
@@ -439,7 +443,7 @@
     }
     animateCanvas();
 
-    // 3. Gyroscope & Mobile Parallax Tilt
+    // 3. Gyroscope Parallax Tilt
     const wrapper = document.getElementById('cardWrapper');
     if (window.DeviceOrientationEvent) {
       window.addEventListener('deviceorientation', (e) => {
@@ -451,7 +455,7 @@
       });
     }
 
-    // 4. Mobile Lightbox Modal
+    // 4. Lightbox Modal
     function openModal(src) {
       const modal = document.getElementById('imageModal');
       document.getElementById('modalImg').src = src;
@@ -462,38 +466,37 @@
       document.getElementById('imageModal').classList.remove('active');
     }
 
-    // 5. iOS Web Audio API Synth Chime
-    let audioCtx = null;
-    function playSynthChord() {
-      try {
-        if (!audioCtx) {
-          const AudioCtx = window.AudioContext || window.webkitAudioContext;
-          audioCtx = new AudioCtx();
-        }
-        if (audioCtx.state === 'suspended') {
-          audioCtx.resume();
-        }
-        const freqs = [261.63, 329.63, 392.00, 523.25];
-        freqs.forEach((freq, idx) => {
-          const osc = audioCtx.createOscillator();
-          const gain = audioCtx.createGain();
-          osc.type = 'sine';
-          osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
-          gain.gain.setValueAtTime(0.05, audioCtx.currentTime);
-          gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 1.2);
-          osc.connect(gain);
-          gain.connect(audioCtx.destination);
-          osc.start(audioCtx.currentTime + idx * 0.04);
-          osc.stop(audioCtx.currentTime + 1.5);
-        });
-      } catch(e) {}
+    // 5. Background Music Handler (Starts on first tap)
+    const bgMusic = document.getElementById('bgMusic');
+    const audioBtn = document.getElementById('audioBtn');
+    let isPlaying = false;
+
+    function toggleAudio() {
+      if (isPlaying) {
+        bgMusic.pause();
+        audioBtn.querySelector('span').innerText = '🎵';
+        isPlaying = false;
+      } else {
+        bgMusic.play().then(() => {
+          audioBtn.querySelector('span').innerText = '🔊';
+          isPlaying = true;
+        }).catch(e => console.log(e));
+      }
     }
 
-    document.getElementById('audioBtn').addEventListener('click', playSynthChord);
+    audioBtn.addEventListener('click', toggleAudio);
 
-    // 6. Viewport-Bounded Emoji Burst (Fixed Overflow Glitch)
+    document.addEventListener('touchstart', function startOnFirstTap() {
+      if (!isPlaying) {
+        bgMusic.play().then(() => {
+          audioBtn.querySelector('span').innerText = '🔊';
+          isPlaying = true;
+        }).catch(() => {});
+      }
+    }, { once: true });
+
+    // 6. Emoji Burst
     function triggerMegaRoseExplosion() {
-      playSynthChord();
       const count = 50;
       const emojis = ['🌹', '🌸', '💖', '✨'];
 
